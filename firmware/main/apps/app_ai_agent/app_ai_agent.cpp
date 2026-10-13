@@ -58,15 +58,27 @@ i2s_driver_install(I2S_NUM_0, &i2s_config, 0, NULL);
     .data_in_num = 14
 };
 i2s_set_pin(I2S_NUM_0, &pin_config);
+    FILE *f = fopen("/sdcard/api_key.txt", "r");
+if (f == NULL) {
+    mclog::tagError("GeminiClient", "Failed to open API key file");
+} else {
+    char key[128];
+    fgets(key, sizeof(key), f);
+    key[strcspn(key, "\r\n")] = 0;
+    
+    char uri[512];
+    snprintf(uri, sizeof(uri), "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent?key=%s", key);
+    
     esp_websocket_client_config_t websocket_cfg = {};
-websocket_cfg.uri = "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent?key=YOUR_API_KEY";
-// Add any required headers or authentication tokens here
-
-_client = esp_websocket_client_init(&websocket_cfg);
-esp_websocket_register_events(_client, WEBSOCKET_EVENT_ANY, websocket_event_handler, (void*)this);
-esp_websocket_client_start(_client);
+    websocket_cfg.uri = uri;
+    
+    _client = esp_websocket_client_init(&websocket_cfg);
+    esp_websocket_register_events(_client, WEBSOCKET_EVENT_ANY, websocket_event_handler, (void *)this);
+    esp_websocket_client_start(_client);
+    fclose(f);
     return true;
 }
+// Add any required headers or authentication tokens here
 
 void GeminiClient::update()
 {
