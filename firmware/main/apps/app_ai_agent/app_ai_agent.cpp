@@ -43,7 +43,21 @@ esp_websocket_client_start(_client);
 }
 
 void GeminiClient::update() {
-    // Handle real-time audio streams here
+   void GeminiClient::update() {
+    // Read audio from I2S microphone
+    int8_t mic_buffer[512];
+    size_t bytes_read = 0;
+    i2s_read(I2S_NUM_0, mic_buffer, sizeof(mic_buffer), &bytes_read, pdMS_TO_TICKS(10));
+    
+    if (bytes_read > 0) {
+        // Send the recorded audio over the WebSocket
+        esp_websocket_client_send_bin(_client, (const char*)mic_buffer, bytes_read);
+    }
+
+    // Note: To play audio from Gemini, you would write 
+    // the received audio data from the websocket event 
+    // handler to I2S using i2s_write().
+}
 }
 AppAiAgent::AppAiAgent()
 {
