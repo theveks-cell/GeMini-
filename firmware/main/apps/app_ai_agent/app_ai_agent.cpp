@@ -20,7 +20,25 @@ GeminiClient::GeminiClient() {
 
 bool GeminiClient::begin() {
     mclog::tagInfo("GeminiClient", "Starting Gemini Live connection...");
-    // Network and WebSocket setup will go here
+    i2s_config_t i2s_config = {
+    .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_TX | I2S_MODE_RX),
+    .sample_rate = 16000,
+    .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,
+    .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT,
+    .communication_format = I2S_COMM_FORMAT_STAND_I2S,
+    .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
+    .dma_buf_count = 8,
+    .dma_buf_len = 512,
+    .use_apll = false,
+};
+i2s_driver_install(I2S_NUM_0, &i2s_config, 0, NULL);
+    esp_websocket_client_config_t websocket_cfg = {};
+websocket_cfg.uri = "wss://YOUR_GEMINI_ENDPOINT_HERE";
+// Add any required headers or authentication tokens here
+
+_client = esp_websocket_client_init(&websocket_cfg);
+esp_websocket_register_events(_client, WEBSOCKET_EVENT_ANY, websocket_event_handler, (void*)this);
+esp_websocket_client_start(_client);
     return true;
 }
 
