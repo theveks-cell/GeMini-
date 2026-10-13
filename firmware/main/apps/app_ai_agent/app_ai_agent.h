@@ -25,4 +25,7 @@ public:
     void onOpen() override;
     void onRunning() override;
     void onClose() override;
+
+private:
+    GeminiClient _gemini_client;
 };
