@@ -57,7 +57,7 @@ void AppAiAgent::onOpen()
     wifi_ap_record_t ap_info;
 if (esp_wifi_sta_get_ap_info(&ap_info) == ESP_OK) {
     mclog::tagInfo(getAppInfo().name, "Wi-Fi is connected.");
-    // Start the Gemini service here
+    _gemini_client.begin();
 } else {
     mclog::tagError(getAppInfo().name, "Wi-Fi is not connected!");
 }
