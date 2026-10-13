@@ -66,6 +66,7 @@ if (esp_wifi_sta_get_ap_info(&ap_info) == ESP_OK) {
 // Called repeatedly while the App is running
 void AppAiAgent::onRunning()
 {
+    _gemini_client.update();
 }
 
 // Called when the App is closed
