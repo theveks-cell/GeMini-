@@ -14,7 +14,19 @@
 
 using namespace mooncake;
 using namespace smooth_ui_toolkit::lvgl_cpp;
+GeminiClient::GeminiClient() {
+    // Initialize Gemini client variables here
+}
 
+bool GeminiClient::begin() {
+    mclog::tagInfo("GeminiClient", "Starting Gemini Live connection...");
+    // Network and WebSocket setup will go here
+    return true;
+}
+
+void GeminiClient::update() {
+    // Handle real-time audio streams here
+}
 AppAiAgent::AppAiAgent()
 {
     // Configure App name
