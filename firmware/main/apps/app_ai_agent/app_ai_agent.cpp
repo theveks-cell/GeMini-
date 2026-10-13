@@ -3,6 +3,8 @@
  *
  * SPDX-License-Identifier: MIT
  */
+#include <esp_websocket_client.h>
+#include <driver/i2s.h>
 #include "app_ai_agent.h"
 #include <hal/hal.h>
 #include <mooncake.h>
@@ -57,7 +59,7 @@ i2s_driver_install(I2S_NUM_0, &i2s_config, 0, NULL);
 };
 i2s_set_pin(I2S_NUM_0, &pin_config);
     esp_websocket_client_config_t websocket_cfg = {};
-websocket_cfg.uri = "wss://YOUR_GEMINI_ENDPOINT_HERE";
+websocket_cfg.uri = "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent?key=YOUR_API_KEY";
 // Add any required headers or authentication tokens here
 
 _client = esp_websocket_client_init(&websocket_cfg);
