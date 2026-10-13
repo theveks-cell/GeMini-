@@ -17,7 +17,24 @@ using namespace smooth_ui_toolkit::lvgl_cpp;
 GeminiClient::GeminiClient() {
     // Initialize Gemini client variables here
 }
-
+static void websocket_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data) {
+    esp_websocket_event_data_t *data = (esp_websocket_event_data_t *)event_data;
+    GeminiClient *client = (GeminiClient *)handler_args;
+    switch (event_id) {
+        case WEBSOCKET_EVENT_CONNECTED:
+            mclog::tagInfo("GeminiClient", "WebSocket connected");
+            break;
+        case WEBSOCKET_EVENT_DATA:
+            if (data->op_code == WS_OPCODE_BINARY) {
+                // Play audio from Gemini
+                i2s_write(I2S_NUM_0, data->data_ptr, data->data_len, NULL, portMAX_DELAY);
+            }
+            break;
+        case WEBSOCKET_EVENT_DISCONNECTED:
+            mclog::tagInfo("GeminiClient", "WebSocket disconnected");
+            break;
+    }
+}
 bool GeminiClient::begin() {
     mclog::tagInfo("GeminiClient", "Starting Gemini Live connection...");
     i2s_config_t i2s_config = {
@@ -32,6 +49,13 @@ bool GeminiClient::begin() {
     .use_apll = false,
 };
 i2s_driver_install(I2S_NUM_0, &i2s_config, 0, NULL);
+    i2s_pin_config_t pin_config = {
+    .bck_io_num = 34,
+    .ws_io_num = 33,
+    .data_out_num = 13,
+    .data_in_num = 14
+};
+i2s_set_pin(I2S_NUM_0, &pin_config);
     esp_websocket_client_config_t websocket_cfg = {};
 websocket_cfg.uri = "wss://YOUR_GEMINI_ENDPOINT_HERE";
 // Add any required headers or authentication tokens here
@@ -42,8 +66,8 @@ esp_websocket_client_start(_client);
     return true;
 }
 
-void GeminiClient::update() {
-   void GeminiClient::update() {
+void GeminiClient::update()
+{
     // Read audio from I2S microphone
     int8_t mic_buffer[512];
     size_t bytes_read = 0;
