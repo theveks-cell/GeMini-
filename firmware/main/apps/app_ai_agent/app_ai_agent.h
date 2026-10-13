@@ -10,6 +10,12 @@
  * @brief Derived App
  *
  */
+class GeminiClient {
+public:
+    GeminiClient();
+    bool begin();
+    void update();
+};
 class AppAiAgent : public mooncake::AppAbility {
 public:
     AppAiAgent();
