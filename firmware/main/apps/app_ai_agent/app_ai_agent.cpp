@@ -41,7 +41,14 @@ void AppAiAgent::onOpen()
 
     // Request to start Xiaozhi service
     // All apps will be uninstall in next mooncake update
-    GetHAL().requestXiaozhiStart();
+    // GetHAL().requestXiaozhiStart();
+    wifi_ap_record_t ap_info;
+if (esp_wifi_sta_get_ap_info(&ap_info) == ESP_OK) {
+    mclog::tagInfo(getAppInfo().name, "Wi-Fi is connected.");
+    // Start the Gemini service here
+} else {
+    mclog::tagError(getAppInfo().name, "Wi-Fi is not connected!");
+}
 }
 
 // Called repeatedly while the App is running
