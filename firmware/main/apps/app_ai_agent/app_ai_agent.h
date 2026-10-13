@@ -15,6 +15,8 @@ public:
     GeminiClient();
     bool begin();
     void update();
+private:
+    esp_websocket_client_handle_t _client;
 };
 class AppAiAgent : public mooncake::AppAbility {
 public:
