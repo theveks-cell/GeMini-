@@ -91,6 +91,7 @@ void GeminiClient::update()
         // Send the recorded audio over the WebSocket
         esp_websocket_client_send_bin(_client, (const char*)mic_buffer, bytes_read);
     }
+}
 
     // Note: To play audio from Gemini, you would write 
     // the received audio data from the websocket event 
